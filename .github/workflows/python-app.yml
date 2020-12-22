@@ -9,18 +9,34 @@ on:
 
 jobs:
   build:
-
+    # Containner run it.
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
+      # Install Python and dependencies
       with:
         python-version: 3.8
     - name: Install dependencies
       run: |
-          pip install -r requirements.txt; fi
+          pip install -r requirements.txt
+    - name: wemake-python-styleguide
+      
+      # Run LINT
+      uses: wemake-services/wemake-python-styleguide@0.14.1
+      # Continue with error occour
+      continue-on-error: true
+      with:
+        # Path or space-separated list of paths to lint
+        path: 'src'
+        # How would you like the results to be displayed?
+        reporter: 'github-pr-review'
+      env:
+        GITHUB_TOKEN: ${{ secrets.LINK_TOKEN }}
     - name: Test with pytest
       run: |
         pytest
+        
+    
